@@ -1,0 +1,7 @@
+8133952, Hex, 1, [[] [] [] [] []], [[8861187 8861189] [10259622 10259623] [] [] []], False, False, Spiral, Caribbean Magenta Banana, Iridescent Shimmer Circuit, \n
+7793603, Lizguard, 1, [[] [] [] [] []], [[8861187 8861189] [10259622 10259623] [] [] []], False, True, Guardian, Royal Purple Shadow, Iridescent Shimmer Basic, My favorite Dragon\n
+8522562, Barakah, 1, [[] [] [] [] []], [[10259622 10259623] [] [] [] []], False, True, Ridgeback, Brown Crimson Brown, Crystal Facet Crackle, \n
+8861187, Pascal, 2, [[7793603 8133952] [] [] [] []], [[10259622 10259623] [] [] [] []], False, False, Spiral, Sky Pink Steel, Iridescent Shimmer Basic, \n
+8861189, Ironfoot, 2, [[7793603 8133952] [] [] [] []], [[] [] [] [] []], False, False, Guardian, Steel Silver Spring, Iridescent Shimmer Basic, \n
+10259622, Ebony, 3, [[8522562 8861187] [7793603 8133952] [] [] []], [[] [] [] [] []], False, True, Ridgeback, Stone Coral Leaf, Crystal Stripes Basic, \n\n
+10259623, Atlas, 3, [[8522562 8861187] [7793603 8133952] [] [] []], [[] [] [] [] []], False, False, Ridgeback, Stonewash Blood Jungle, Crystal Stripes Basic, \n
