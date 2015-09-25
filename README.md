@@ -1,5 +1,5 @@
 # Dragon Ansestry and Linages (DAL9000)
-This is the as yet unamed dragon tracking application of Flight Rising user TheLegoLady.  
+This is the dragon tracking application by Flight Rising user TheLegoLady.  
 This is the Alpha version, and is by no means a finished product.  Loads of new features will be added.
 All dragon species, colors, genes, and ideas © Stormlight Workshop.
 
