@@ -1,5 +1,6 @@
 # DragonTracker9000
 This is the as yet unamed dragon tracking application of Flight Rising user TheLegoLady.  
+This is the Alpha version, and is by no means a finished product.  Loads of new features will be added.
 All dragon species, colors, genes, and ideas © Stormlight Workshop.
 
 Requirements:
@@ -28,6 +29,9 @@ Dragon images:
 Currently, the application only works with .gif filetype images.
 To have a dragon display it's image, grab it's avatar image.  These images can be found by using Flight Rising's 'change Avatar' feature, and saving the images.
 Use a free program like GIMP to convert the images to .gif.  Also, be sure to add a white background layer first for added prettyness.
-For any dragons you do not have images for, a missing dragon image has been provided for you.
+Save the new image as <dragon ID>.gif where you replace <dragon ID> with the dragon's ID number.
+One dragon image is provided for you as a substitute for any dragon images you do not have gifs of, and will be used whenever the application cannot find a certain dragon's image.
+It can be found at https://cloud.githubusercontent.com/assets/8117715/10091551/e1a0f466-630a-11e5-8276-297444b964c6.gif
+Save it in the Dragon Tracker folder as MissingNo.gif
 
 I think that's it.  Happy Dragon Tracking!
