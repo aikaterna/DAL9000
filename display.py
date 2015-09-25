@@ -110,8 +110,8 @@ class DisplayApp:
 		self.pointSelect = None # index of point currently selected
 		self.pointSelText = tk.StringVar()	# text representing the data values of a certain point
 		self.hoverDrag = None # dragon you hover over when comparing liniages n stuff
-		self.horizontalGap = 160/2 +10
-		self.verticalGap = 180/2
+		self.horizontalGap = 160/2 +20
+		self.verticalGap = 180/2 + 10
 		
 		"""###################"""
 		self.dragons = dd.Data()
@@ -411,7 +411,12 @@ class DisplayApp:
 		for i in range(len(levels)):
 			for j in range(len(self.dragons.genMap[levels[i]])):
 				self.imageKey[self.dragons.genMap[levels[i]][j].visuals.assemble(100+self.horizontalGap*j,100+self.verticalGap*i, self.canvas)]=self.dragons.genMap[levels[i]][j]
-				
+		
+		#stop displating exalted dragons
+		keys = self.dragons.IDmap.keys()
+		for key in keys:
+			if self.dragons.IDmap[key].exalt:
+				self.removeDragonFromDisplay(self.dragons.IDmap[key])
 		
 	def handleSave(self, event = None):
 		print "Save!"
@@ -487,22 +492,28 @@ class DisplayApp:
 	def handleExaultDragon(self, event = None):
 		box = dialogs.ExaultDragonDialog(self.root, self.pointSelect)
 		if box.result:
-			for child in self.pointSelect.decendants[0]:
-				# was a mother
-				if self.pointSelect.gender:
-					self.dragons.IDmap[child].visuals.removeMother(self.canvas)
-				# was a father
-				else:
-					self.dragons.IDmap[child].visuals.removeFather(self.canvas)
-			self.dragons.exault(self.pointSelect)
-			del self.imageKey[self.pointSelect.visuals.image]
-			self.pointSelect.visuals.remove(self.canvas)
-			
-			self.pointSelect = None
-			self.resetDragonSide()
+			self.removeDragonFromDisplay(self.pointSelect)
 		
-			
-	
+	def removeDragonFromDisplay(self, dragon):
+		for child in dragon.decendants[0]:
+			# was a mother
+			if dragon.gender:
+				child = self.dragons.IDmap[child]
+				if not child.exalt:
+					child.visuals.removeMother(self.canvas)
+			# was a father
+			else:
+				child = self.dragons.IDmap[child]
+				if not child.exalt:
+					child.visuals.removeFather(self.canvas)
+		'''Issues with fully removing object, neet to resolve with better algorithm'''
+		self.dragons.exault(dragon)
+		
+		del self.imageKey[dragon.visuals.image]
+		dragon.visuals.remove(self.canvas)
+		
+		self.pointSelect = None
+		self.resetDragonSide()
 
 ##########################
 # interaction functions bound to the root
@@ -583,7 +594,11 @@ class DisplayApp:
 					ansestor = self.dragons.IDmap[id]
 					ansestor.visuals.related = False
 					self.canvas.itemconfig(ansestor.visuals.rect, outline="black",width=1)
-			self.hoberDrag = None
+			
+			self.hoverDrag.visuals.related = False
+			self.canvas.itemconfig(self.hoverDrag.visuals.rect, outline="black",width=1)
+			self.hoverDrag = None
+			
 			
 		if self.pointSelect.motherDragon == None:
 			motherName = "None"
@@ -640,11 +655,14 @@ class DisplayApp:
 				
 			ansestorClash = ""
 			
+			# highlight the ancestors of the selected dragon
 			for level in self.pointSelect.ansestors:
 				for id in level:
 					ansestor = self.dragons.IDmap[id]
 					ansestor.visuals.related = True
 					self.canvas.itemconfig(ansestor.visuals.rect, outline="yellow",width=10)
+			
+			# highlight the ancestors of the hover dragon
 			for level in self.hoverDrag.ansestors:
 				for id in level:
 					ansestor = self.dragons.IDmap[id]
@@ -653,6 +671,13 @@ class DisplayApp:
 						ansestorClash+= ", "+ansestor.name
 					else:
 						self.canvas.itemconfig(ansestor.visuals.rect, outline="yellow",width=10)
+			
+			# hi-light the hover dragon, we can't forget that!
+			if self.hoverDrag.visuals.related:
+				self.canvas.itemconfig(self.hoverDrag.visuals.rect, outline="red",width=10)
+				ansestorClash+= ", "+self.hoverDrag.name
+			else:
+				self.canvas.itemconfig(self.hoverDrag.visuals.rect, outline="green",width=10)
 			
 			if ansestorClash != "":
 				self.pointSelText.set("Imcompatible match:\nCommon ansestors:\n"+ansestorClash)
@@ -684,7 +709,7 @@ class DisplayApp:
 		for i in range(len(self.posibleColor)):
 			for j in range(len(self.posibleColor[i])):
 				self.panelCanvas.itemconfig(self.posibleColor[i][j], state = tk.HIDDEN)
-		if self.hoverDrag != None:
+		if (self.hoverDrag != None) and (self.pointSelect != None):
 			for level in self.pointSelect.ansestors:
 				for id in level:
 					ansestor = self.dragons.IDmap[id]
