@@ -134,6 +134,7 @@ class Data:
 		
 		# attach parents and add all dragons to ALL the lists/dictionaries
 		parented = []
+		notExaulted = []
 		for dragon in self.dragonList:
 			#print dragon.gen
 			#print dragon.name
@@ -149,6 +150,13 @@ class Data:
 				self.genMap[dragon.gen] = [dragon]
 			else:
 				self.genMap[dragon.gen].append(dragon)
+		'''	
+			# set up a list of exalted dragons to remove from the dragon list (list is used for dragon display, but not family linkages)
+			if not dragon.exalt:
+				notExaulted.append(dragon)
+		self.dragonList = notExaulted
+		'''
+		
 		print
 		print self.dragonList
 		print
@@ -220,6 +228,9 @@ class Data:
 	#assumes the dragon is a full dragon object, previously created.
 	def exault(self, dragon):
 		# the dragon holds all the info necessary to get rid of itself.
+		'''
+		# need a better algorithm 
+		
 		for level in range (5):
 			for ansestor in dragon.ansestors[level]:
 				print str(ansestor) + 'removed'
@@ -234,11 +245,11 @@ class Data:
 						self.IDmap[decendant].motherDragon = None
 					else:
 						self.IDmap[decendant].fatherDragon = None
-		
-		
+		'''
+		dragon.exalt = True
 		self.dragonList.remove(dragon)
-		del self.IDmap[dragon.id]
-		self.genMap[dragon.gen].remove(dragon)
+		#del self.IDmap[dragon.id]
+		#self.genMap[dragon.gen].remove(dragon)
 		
 	
 	#takes a filename, which must be in .csv format, and reads it in to creat a 2D array of the semi-raw data
