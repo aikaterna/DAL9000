@@ -15,7 +15,7 @@ The application should now launch.
 
 Using the application:
 To select a dragon, double click on it.  It will be boxed green and stats will show up in the side bar.  The exalt and edit buttons will become active.
-To compare potental mates, hover over another dragon.  It will be outlined in greed as well.  If the match is compatable, the various color outcomes are displayed in the sidebar.  If the match is not possible, either both dragons are the same sex, or there have common ansestors.  The sidebar will display the appropriate error, and common ansestors will be highlighted red.  All other ansestors will be yellow.  
+To compare potental mates, hover over another dragon.  It will be outlined in greed as well.  If the match is compatable, the various color outcomes are displayed in the sidebar.  If the match is not possible, either both dragons are the same sex, or there have common ansestors.  The sidebar will display the appropriate error, and common ansestors will be highlighted red.  All other ansestors will be yellow.  De-select a dragon by double clicking somewhere without a dragon, or selecting another dragon.  Clicking and dragging the mouse will move the dragons on the screen.  
 
 Adding dragons:
 All dragon information is added manually using the add dragon button.  This is in line with the Flight Rising terms of Use.
