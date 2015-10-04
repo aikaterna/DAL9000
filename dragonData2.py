@@ -1,5 +1,5 @@
 # Lizzie Tonkin
-# Last edited: July 31, 2015
+# Last edited: Oct 3, 2015
 # Based on:
 #	CS 251 2014
 #	Project 5
@@ -21,7 +21,7 @@ int generation level
 int mother ID
 int father ID
 boolean exalted (is it still available for breeding (true means exalted and not displayed))
-gender (boolean true female, false male)
+matingType (boolean true female, false male)
 species, string
 int list 3 colors (using position on color wheel), edit: no use string name, later we will have dictionary of name to position and hex
 string list 3 genes
@@ -58,7 +58,7 @@ children
 # see above for format
 # no special accessors or mutators yet, but there will be some cool ones soon!
 class Dragon:
-	def __init__(self, id, name, gen, ansestors, decendants, exalt, gender, species, colors, genes, notes):
+	def __init__(self, id, name, gen, ansestors, decendants, exalt, matingType, species, colors, genes, notes):
 		self.id = id
 		self.name = name
 		self.gen = gen
@@ -69,7 +69,7 @@ class Dragon:
 		self.decendants = decendants
 		
 		self.exalt = exalt
-		self.gender = gender
+		self.matingType = matingType
 		self.species = species
 		self.colors = colors
 		self.genes = genes
@@ -87,14 +87,14 @@ class Dragon:
 	
 	def __repr__(self):
 	# To string function returns the name of the tile
-		#return "<"+str(self.id) + ", " + self.name + ", " + str(self.gen) + ", " + str(self.motherID) + ", " + str(self.fatherID) + ", " + str(self.exalt) + ", " + str(self.gender) + ", " + self.species + ", " + str(self.colors) + ", " + str(self.genes) + ", " + self.notes+">"
+		#return "<"+str(self.id) + ", " + self.name + ", " + str(self.gen) + ", " + str(self.motherID) + ", " + str(self.fatherID) + ", " + str(self.exalt) + ", " + str(self.matingType) + ", " + self.species + ", " + str(self.colors) + ", " + str(self.genes) + ", " + self.notes+">"
 		return self.name
 		
 	# prints a nice easy to read version for fact checking
 	def fancyPrint(self):
 		return "<"+str(self.id) + ", " + self.name + ", " + str(self.gen) + ", " + \
 		str(self.ansestors).replace(',','') + ", " + str(self.decendants).replace(',','') + ", " + str(self.exalt) + ", " + \
-		str(self.gender) + ", " + self.species + ", " + str(self.colors) + ", " + \
+		str(self.matingType) + ", " + self.species + ", " + str(self.colors) + ", " + \
 		str(self.genes) + ", " + notes+">"
 	
 	
@@ -103,7 +103,7 @@ class Dragon:
 		notes = string.replace(self.notes , "\n" , "\\n") #so that these do not cause unwanted newlines in the file, comment newlines are made literal until reloaded, when they are transformed.
 		return str(self.id) + ", " + self.name + ", " + str(self.gen) + ", " + \
 			str(self.ansestors).replace(',','') + ", " + str(self.decendants).replace(',','') + ", " + str(self.exalt) + ", " + \
-			str(self.gender) + ", " + self.species + ", " + str(self.colors[0])+ " " + \
+			str(self.matingType) + ", " + self.species + ", " + str(self.colors[0])+ " " + \
 			str(self.colors[1])+ " " + str(self.colors[2])+ ", " + str(self.genes[0]) + " " + \
 			str(self.genes[1]) + " " + str(self.genes[2]) + ", " + notes
 	
@@ -141,7 +141,7 @@ class Data:
 			if dragon.gen != 1:
 				for parent in dragon.ansestors[0]:
 					# assign proper parents to parental roles
-					if self.IDmap[parent].gender==True:
+					if self.IDmap[parent].matingType==True:
 						dragon.motherDragon = self.IDmap[parent]
 					else:
 						dragon.fatherDragon = self.IDmap[parent]
@@ -241,7 +241,7 @@ class Data:
 				print str(decendant) + 'removed'
 				self.IDmap[decendant].ansestors[level].remove(dragon.id)
 				if level == 0:
-					if dragon.gender:
+					if dragon.matingType:
 						self.IDmap[decendant].motherDragon = None
 					else:
 						self.IDmap[decendant].fatherDragon = None

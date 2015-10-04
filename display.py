@@ -1,5 +1,5 @@
 # Author: Lizzie Tonkin
-# Last edited: July 31, 2015
+# Last edited: Oct 3, 2015
 # Based on:
 #	CS 251 2014
 #	Project 5
@@ -136,7 +136,7 @@ class DisplayApp:
 		self.root.geometry( "%dx%d+50+30" % (self.initDx, self.initDy) )
 
 		# set the title of the window
-		self.root.title("Dragon Datatron 9000")# May it's reign of terror be merciful
+		self.root.title("Dragon Ancestry and Lineages 9000")# May it's reign of terror be merciful
 
 		# set the maximum size of the window for resizing
 		self.root.maxsize( 1600, 900 )
@@ -443,11 +443,11 @@ class DisplayApp:
 			return
 		print "Everything checks out."
 		
-		# assigne gender
+		# assigne matingType
 		if par[4] == "Female":
-			gender = True
+			matingType = True
 		else:
-			gender = False
+			matingType = False
 		
 		
 		#I'm moving dragon creation out here for now, for more sensible stuff
@@ -459,7 +459,7 @@ class DisplayApp:
 			father = self.dragons.IDmap[int(par[1])]
 		
 		
-		new = dd.Dragon( int(par[3]), par[2], 1, None, None, False, gender, par[5], [par[6],par[8],par[10]], [par[7],par[9],par[11]], par[12])
+		new = dd.Dragon( int(par[3]), par[2], 1, None, None, False, matingType, par[5], [par[6],par[8],par[10]], [par[7],par[9],par[11]], par[12])
 		self.dragons.add(new, mother, father)
 		
 		i = new.gen-1
@@ -497,7 +497,7 @@ class DisplayApp:
 	def removeDragonFromDisplay(self, dragon):
 		for child in dragon.decendants[0]:
 			# was a mother
-			if dragon.gender:
+			if dragon.matingType:
 				child = self.dragons.IDmap[child]
 				if not child.exalt:
 					child.visuals.removeMother(self.canvas)
@@ -610,15 +610,15 @@ class DisplayApp:
 		else:
 			fatherName = self.pointSelect.fatherDragon.name
 			
-		if self.pointSelect.gender:
-			gender = "Female"
+		if self.pointSelect.matingType:
+			matingType = "Female"
 		else:
-			gender = "Male"
+			matingType = "Male"
 		
 			
 		self.pointSelText.set("Dragon Info\r\rName: %s" %(self.pointSelect.name)+
 										  "\rID: %d" %(self.pointSelect.id)+
-										  "\rName: %s" %(gender)+
+										  "\rMating Type: %s" %(matingType)+
 										  "\rGeneration: %d" %(self.pointSelect.gen)+
 										  "\r\rMother: %s"%(motherName)+
 										  "\rFather: %s"%(fatherName)+
@@ -649,8 +649,8 @@ class DisplayApp:
 			for j in range(len(self.posibleColor[i])):
 				self.panelCanvas.itemconfig(self.posibleColor[i][j], state = tk.HIDDEN)
 		
-			if (self.pointSelect.gender == self.hoverDrag.gender):
-				self.pointSelText.set("Imcompatible match:\nGender mismatch.")
+			if (self.pointSelect.matingType == self.hoverDrag.matingType):
+				self.pointSelText.set("Imcompatible match:\nMating type mismatch.")
 				return 
 				
 			ansestorClash = ""
@@ -744,7 +744,7 @@ class DisplayApp:
 					return
 				# actually two dragons, so display results (add compatibility test in here somewhere)
 				else:
-					#hypothetically, preform history/gender analysis here, then act on results.  right now, working on positive 
+					#hypothetically, preform history/matingType analysis here, then act on results.  right now, working on positive 
 					self.hoverDrag = self.imageKey[point]
 					self.compareDragonSide()
 		# not hovering over a dragon or no dragon is currently selected

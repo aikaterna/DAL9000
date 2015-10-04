@@ -1,8 +1,14 @@
+# Author: Lizzie Tonkin
+# Last edited: Oct 3, 2015
+# Various dialog boxes in their own file to prevent clutter in other files.  
+
+
+
 import Tkinter as tk
 
 ##########################
 # Dialog box class
-# coppied from effbot, modified to our personal use.
+# coppied from effbot, modified to personal use.
 class Dialog(tk.Toplevel):
 
 	def __init__(self, parent, title = None):
@@ -137,7 +143,7 @@ class AddDragonDialog(Dialog):
 		females = ["Mother:"]
 		males = ["Father:"]
 		for dragon in self.dragonData.dragonList:
-			if dragon.gender:
+			if dragon.matingType:
 				females.append(dragon.id)
 			else:
 				males.append(dragon.id)
@@ -212,14 +218,14 @@ class AddDragonDialog(Dialog):
 		id.grid( row=1, column=1)
 		self.listboxList.append(id)
 		
-		label = tk.Label( master, text="Gender:", width=10 )
+		label = tk.Label( master, text="Mating Type:", width=10 )
 		label.grid( row=2, column=0)
-		genderOption = tk.StringVar( master )
-		genderOption.set("Female")
-		genderMenu = tk.OptionMenu( master, genderOption, 
+		matingTypeOption = tk.StringVar( master )
+		matingTypeOption.set("Female")
+		matingTypeMenu = tk.OptionMenu( master, matingTypeOption, 
 			"Female","Male" ) # can add a command to the menu
-		genderMenu.grid( row=2, column=1)
-		self.listboxList.append(genderOption)
+		matingTypeMenu.grid( row=2, column=1)
+		self.listboxList.append(matingTypeOption)
 		
 		label = tk.Label( master, text="Breed:", width=10 )
 		label.grid( row=3, column=0)
@@ -239,9 +245,9 @@ class AddDragonDialog(Dialog):
 		
 		# make primary, secondary, and tertiary sections for colors and genes.
 		titleList = ["Primary:","Secondary:","Tertiary:"]
-		geneListList = [["Basic","Iridescent","Tiger","Clown","Speckle","Ripple","Bar","Crystal"],
-						["Basic","Shimmer","Stripes","Eye Spots","Freckle","Seraph","Current","Daub","Facet"],
-						["Basic","Circuit","Gembond","Underbelly","Crackle","Smoke","Spines","Okapi"]]
+		geneListList = [["Basic","Iridescent","Tiger","Clown","Speckle","Ripple","Bar","Crystal","Vipera","Piebald","Cherub"],
+						["Basic","Shimmer","Stripes","Eye Spots","Freckle","Seraph","Current","Daub","Facet","Hypnotic","Paint","Peregrine"],
+						["Basic","Circuit","Gembond","Underbelly","Crackle","Smoke","Spines","Okapi","Glimmer"]]
 		
 		for title in titleList:
 			label = tk.Label( master, text=title, width=10 )
@@ -290,7 +296,7 @@ class AddDragonDialog(Dialog):
 # The dialog box that allows users to add a new dragon
 #i'll finish it off later when I have proper references
 class EditDragonDialog(Dialog):
-	def __init__(self, parent, dragonData, curDrag, title = "Dragon Adder 9000"):
+	def __init__(self, parent, dragonData, curDrag, title = "Dragon Editer 9000"):
 		self.dragonData=dragonData
 		self.curDrag = curDrag
 		self.listboxList = []
@@ -331,13 +337,13 @@ class EditDragonDialog(Dialog):
 		label = tk.Label( master, text=self.curDrag.id, width=10 )
 		label.grid( row=1, column=1)
 		
-		label = tk.Label( master, text="Gender:", width=10 )
+		label = tk.Label( master, text="Mating Type:", width=10 )
 		label.grid( row=2, column=0)
-		if self.curDrag.gender:
-			gender = "Female"
+		if self.curDrag.matingType:
+			matingType = "Female"
 		else:
-			gender = "Male"
-		label = tk.Label( master, text=gender, width=10 )
+			matingType = "Male"
+		label = tk.Label( master, text=matingType, width=10 )
 		label.grid( row=2, column=1)
 		
 		label = tk.Label( master, text="Breed:", width=10 )
@@ -357,10 +363,10 @@ class EditDragonDialog(Dialog):
 		
 		# make primary, secondary, and tertiary sections for colors and genes.
 		titleList = ["Primary:","Secondary:","Tertiary:"]
-		geneListList = [["Basic","Iridescent","Tiger","Clown","Speckle","Ripple","Bar","Crystal"],
-						["Basic","Shimmer","Stripes","Eye Spots","Freckle","Seraph","Current","Daub","Facet"],
-						["Basic","Circuit","Gembond","Underbelly","Crackle","Smoke","Spines","Okapi"]]
-		
+		geneListList = [["Basic","Iridescent","Tiger","Clown","Speckle","Ripple","Bar","Crystal","Vipera","Piebald","Cherub"],
+						["Basic","Shimmer","Stripes","Eye Spots","Freckle","Seraph","Current","Daub","Facet","Hypnotic","Paint","Peregrine"],
+						["Basic","Circuit","Gembond","Underbelly","Crackle","Smoke","Spines","Okapi","Glimmer"]]
+						
 		for title in titleList:
 			label = tk.Label( master, text=title, width=10 )
 			label.grid( row=i, column=0)

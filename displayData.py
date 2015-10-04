@@ -1,5 +1,5 @@
 # Lizzie Tonkin
-# Last edited: July 31, 2015
+# Last edited: Oct 3, 2015
 # Class that organizes all display related stuff into one place.
 
 
@@ -89,7 +89,7 @@ class DisplayData:
 		canvas.delete(self.rightLine)
 		'''
 		# was a mother
-		if self.derg.gender:
+		if self.derg.matingType:
 			for child in self.derg.decendants[0]:
 				curLoc = canvas.coords(child.visuals.rect)
 				canvas.coords(child.visuals.leftLine, curLoc[0],curLoc[1] , curLoc[2],curLoc[1])
