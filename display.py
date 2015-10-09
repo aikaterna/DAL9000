@@ -11,7 +11,6 @@ import Tkinter as tk
 import tkFileDialog
 import dragonData2 as dd
 import dialogs
-import view as v
 
 """
 dragon tree, because it's my pet project
@@ -89,7 +88,7 @@ class DisplayApp:
 		self.initDy = height
 		
 		#important feilds.	I am sorry there are so many, but they make life so much easier
-		self.view = v.View()	# view object
+		#self.view = v.View()	# view object
 		#self.axisPoints = np.matrix([[]]) # matrix for points for axis, axes, why is pluralizing words in English so stupid?
 		#self.axisLines = []		# Line objects for Axes
 		#self.axisLabels = []	# Text Labels objects for Axes
@@ -365,11 +364,7 @@ class DisplayApp:
 
 	# This functon should be called whenever the view is changed and there is data, as it changes the data to reflect the view.
 	def updataData(self):
-		vtm = self.view.build()
-		newPoints =(vtm*self.data.T).T
-		for i in range(len(self.dataPoints)):
-			self.canvas.coords(self.dataPoints[i], newPoints[i,0]-self.sizeList[i],newPoints[i,1]-self.sizeList[i] , newPoints[i,0]+self.sizeList[i],newPoints[i,1]+self.sizeList[i])
-
+		print 'data has been outlawed by the freedom of non-infomration act'
 			
 	
 	#This function handles the opening of a data file, and the storage of the information in that file
@@ -526,37 +521,19 @@ class DisplayApp:
 
 	# resets the view to the origional view.
 	def reset(self, event = None):
-		self.view.reset()
-		#self.updateAxes()
-		if self.data != None:
-			self.updataData()
+		print 'no reset for you'
 		
 	# centers the Z axis, giving a 2D view along the x and y
 	def centerZ(self, event = None):
-		self.view.vpn = np.matrix([[0, 0, -1]])
-		self.view.vup = np.matrix([[0, 1, 0]])
-		self.view.u = np.matrix([[-1, 0, 0]])
-		#self.updateAxes()
-		if self.data != None:
-			self.updataData()
+		print 'no reset for you'
 		
 	# centers the X axis, giving a 2D view along the z and y
 	def centerX(self, event = None):
-		self.view.vpn = np.matrix([[1, 0, 0]])
-		self.view.vup = np.matrix([[0, 1, 0]])
-		self.view.u = np.matrix([[0, 0, -1]])
-		#self.updateAxes()
-		if self.data != None:
-			self.updataData()
+		print 'no reset for you'
 		
 	# centers the Y axis, giving a 2D view along the x and z
 	def centerY(self, event = None):
-		self.view.vpn = np.matrix([[0, -1, 0]])
-		self.view.vup = np.matrix([[1, 0, 0]])
-		self.view.u = np.matrix([[0, 0, -1]])
-		#self.updateAxes()
-		if self.data != None:
-			self.updataData()
+		print 'no reset for you'
 	
 	
 	
@@ -787,13 +764,7 @@ class DisplayApp:
 	def handleMouseButton1Motion(self, event):
 		dx = event.x - self.baseClick[0]
 		dy = event.y - self.baseClick[1]
-		du = float(dx)/self.view.screen[0]*self.view.extent[0]
-		dup =float(dy)/self.view.screen[1]*self.view.extent[1]
-		self.view.vrp = self.view.vrp + du * self.view.u + dup * self.view.vup
 		self.baseClick = event.x,event.y
-		#self.updateAxes()
-		if self.data != None:
-			self.updataData()
 		
 		"""########################"""
 		
@@ -840,42 +811,21 @@ class DisplayApp:
 		
 	# records base click and base view for zooming
 	def handleMouseButton3(self, event):
-		self.baseClick = (event.x, event.y)
-		self.baseView = self.view.clone()
+		print 'no zoom for you'
 			
 	# zooming
 	# moving the mouse up the screen makes things bigger, moving it down the screen makes them smaller.
 	def handleMouseButton3Motion(self, event):
-		dy = float(event.y-self.baseClick[1])
-		scale_factor = 1 + dy*.005
-		if scale_factor > 3:
-			scale_factor = 3
-		if scale_factor < .1:
-			scale_factor = .1
-		self.view.extent[0] = self.baseView.extent[0] * scale_factor
-		self.view.extent[1] = self.baseView.extent[1] * scale_factor
-		#self.updateAxes()
-		if self.data != None:
-			self.updataData()
-
+		print 'no zoom for you'
 
 	# records base click and base view for rotation
 	def handleMouseButton2(self, event):
-		self.baseClick = (event.x, event.y)
-		self.baseView = self.view.clone()
+		print 'no rotation for you'
 	
 	# handles the acutall rotation of the view.
 	# moving the mouse horizontally rotates around the VUP view axis, moving it vertically rotates around the U view axis
 	def handleMouseButton2Motion(self, event):
-		dx = event.x - self.baseClick[0]
-		dy = event.y - self.baseClick[1]
-		delta0 = dx*3.1415/500
-		delta1 = dy*3.1415/500
-		self.view=self.baseView.clone()
-		self.view.rotateVRC(-delta0,delta1)
-		#self.updateAxes()
-		if self.data != None:
-			self.updataData()
+		print 'no rotation for you'
 	
 
 #########################
