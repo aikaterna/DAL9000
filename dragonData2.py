@@ -6,109 +6,60 @@
 # allows data to be read in and stored, and accessed and referenced accordingly
 
 
-
 import displayData as d
 import string
 import xml.etree.ElementTree as ET
 
-
-"""
-Dragon object/ csv file order
-
-int id (also used to find the image)
-string name
-int generation level
-int mother ID
-int father ID
-boolean exalted (is it still available for breeding (true means exalted and not displayed))
-matingType (boolean true female, false male)
-species, string
-int list 3 colors (using position on color wheel), edit: no use string name, later we will have dictionary of name to position and hex
-string list 3 genes
-string notes no commas please
-"""
-
-## need to fix the tree issues, and make the tree more intigrated
+'''
+# stuff that needs to be looked into / bugs
+### need to fix the tree issues, and make the tree more intigrated
 ## tree issues is that if the dragons in not created in this program, things will go weird
-
-"""
-Ancestry map (not drawn to implementation)
-
-Parents
-[[5]
- [4]
- [3]
- [2]
- [1]]
- 
-Dragon
-
-children
-[[1]
- [2]
- [3]
- [4]
- [5]]
-"""
-
+### some inconsistency with the rest print and what is shown in the display.  Display is right, the check() function is wrong.  
+'''
 
 
 
 # dragon class
-# stores all the information in a nice feild
-# see above for format
-# no special accessors or mutators yet, but there will be some cool ones soon!
+# stores all the information in a nice fields
+# see comments next to each field 
+# this class will eventually have to be entirely re-written, to make proper use of the new ElementTree
+# why did I not write Accessor and Mutator functions when I had the chance? WHY?  There is a lesson here kids, do more code earlier to save time later.
 class Dragon:
 	def __init__(self, id, name, gen, ansestors, decendants, exalt, matingType, species, colors, genes, notes, treeNode=None):
-		self.id = id
-		self.name = name
-		self.gen = gen
-		self.motherDragon = None #OK, got rid of individual ID references, but kept direct parent object references because they are important.
-		self.fatherDragon = None
+		self.id = id # integer, id number
+		self.name = name # string, name of the dragon
+		self.gen = gen # integer, generation within the clan (starting at 1).  Not generation within Flight Rising.
+		self.motherDragon = None #reference to mother Dragon object, added later
+		self.fatherDragon = None #reference to father Dragon object, added later
 		
-		self.ansestors = ansestors
-		self.decendants = decendants
+		self.ansestors = ansestors # five level list, containing list of ancestor Id numbers.  0 is parents, 4 is the greatgreatgreatgreandparents.  Ids themselves in no particular order within the list.  Sub lists can be empty
+		self.decendants = decendants # five level list, containing list of descendant Id numbers.  0 is children, 4 is the greatgreatgreatgrandchildren.  Ids themselves in no particular order within the list.  Sub lists can be empty
 		
-		self.exalt = exalt
-		self.matingType = matingType
-		self.species = species
-		self.colors = colors
-		self.genes = genes
-		self.notes = string.replace(notes , "\\n" , "\n")  # fixes bug where where newlines display as literal '\n'  See below for reason.
+		self.exalt = exalt # boolean, true if exalted, false if still around
+		self.matingType = matingType # boolean, true if female, false if male
 		
-		self.treeNode = treeNode
+		self.species = species # string, species
+		self.colors = colors # list of strings, color names in order primary secondary tertiary 
+		self.genes = genes # list of strings, color names in order primary secondary tertiary 
+		self.notes = notes # string, notes.  Can include newline characters?
 		
-		# display stuff that is filled in later
-		self.rect = None
-		self.image = None
-		self.photo = None
-		self.visuals = d.DisplayData(self)
+		self.treeNode = treeNode #ElementTreeElement, I forget the official object name and am on a plaine with no internet right now.  Anyway, is the <Dragon> tag, so any information of other programs is preserved
 		
-	# we do have a ugly print to string though, because
-	# I'll add a nice printing version later.
-	# since no one will see it even if it does go public, whatever	
+		self.visuals = d.DisplayData(self) #empty displayData object, which is activated later
+		
 	
+	# To string function returns the name of the dragon.  Can be altered to show all of the information
 	def __repr__(self):
-	# To string function returns the name of the tile
 		#return "<"+str(self.id) + ", " + self.name + ", " + str(self.gen) + ", " + str(self.motherID) + ", " + str(self.fatherID) + ", " + str(self.exalt) + ", " + str(self.matingType) + ", " + self.species + ", " + str(self.colors) + ", " + str(self.genes) + ", " + self.notes+">"
 		return self.name
+	
 		
 	# prints a nice easy to read version for fact checking
 	def fancyPrint(self):
 		return "<"+str(self.id) + ", " + self.name + ", " + str(self.gen) + ", " + \
-		str(self.ansestors).replace(',','') + ", " + str(self.decendants).replace(',','') + ", " + str(self.exalt) + ", " + \
-		str(self.matingType) + ", " + self.species + ", " + str(self.colors) + ", " + \
-		str(self.genes) + ", " + notes+">"
-	
-	
-	# prints the version of the dragon which is stored in a file for later use.
-	def saveFormat(self):
-		notes = string.replace(self.notes , "\n" , "\\n") #so that these do not cause unwanted newlines in the file, comment newlines are made literal until reloaded, when they are transformed.
-		return str(self.id) + ", " + self.name + ", " + str(self.gen) + ", " + \
 			str(self.ansestors).replace(',','') + ", " + str(self.decendants).replace(',','') + ", " + str(self.exalt) + ", " + \
-			str(self.matingType) + ", " + self.species + ", " + str(self.colors[0])+ " " + \
-			str(self.colors[1])+ " " + str(self.colors[2])+ ", " + str(self.genes[0]) + " " + \
-			str(self.genes[1]) + " " + str(self.genes[2]) + ", " + notes
+			str(self.matingType) + ", " + self.species + ", " + str(self.colors) + ", " + \
+			str(self.genes) + ", " + notes+">"
 	
 	
 	
@@ -123,26 +74,28 @@ class Dragon:
 	
 	
 	
-	
+# Data class
+# holds all the Dragon objects within a few easy to acces lists, which are used for different purposes.  
+# is also in charge of makine sure dragons are kept up to date, such as adding children, adding direct parent links, exalting, saving and reading files, the list goes on.  Actually no that's it.  	
 class Data:
 
-	#creates a Data object based on a filename.	 The file must be in .csv format.
-	def __init__(self, filename = None, enums = False, data= None):
-		self.DRG= None
-		self.IDmap = {}
-		self.genMap = {}
+	#creates a Data object based on a filename.	 The file must be in .drg format.
+	def __init__(self, filename = None):
+		self.DRG= None # ElementTree object, root I think, the one that encompasses the entire file read in.
+		self.IDmap = {} # dictionary, where the dragon's ID is the key, and the Dragon object is the value.  Used for all sorts of things
+		self.genMap = {} # dictionary, where the generation within the clan is the key, and the value is a list of Dragon objects in that generation.  Used for ordering initial displays.  
+		
+		# if this is an empty file, make an empty dragon list and return.  
 		if filename == None:
 			self.dragonList = []
 			return
+		
+		# otherwise, make a dragon list from the file.  
+		# dragon list is just that, a unordered list of Dragon objects.  Used to calculate the offset (a display value), and for finding all the dragon objects when moving them around, and for the initial dragon linking
 		self.dragonList = self.readFromFile(filename)
 		
-		
 		# attach parents and add all dragons to ALL the lists/dictionaries
-		parented = []
-		notExaulted = []
 		for dragon in self.dragonList:
-			#print dragon.gen
-			#print dragon.name
 			if dragon.gen != 1:
 				for parent in dragon.ansestors[0]:
 					# assign proper parents to parental roles
@@ -155,13 +108,8 @@ class Data:
 				self.genMap[dragon.gen] = [dragon]
 			else:
 				self.genMap[dragon.gen].append(dragon)
-		'''	
-			# set up a list of exalted dragons to remove from the dragon list (list is used for dragon display, but not family linkages)
-			if not dragon.exalt:
-				notExaulted.append(dragon)
-		self.dragonList = notExaulted
-		'''
 		
+		# check that everything loaded nicely with a nice print
 		print
 		print self.dragonList
 		print
@@ -170,24 +118,10 @@ class Data:
 		print self.genMap
 		print 
 		
-	# check it all worked
-	def check(self):
-		print "###"
-		for dragon in self.dragonList:
-			print dragon.id
-			print dragon.name
-			print dragon.gen
-			print dragon.ansestors[0]
-			print dragon.motherDragon
-			print dragon.fatherDragon
-			print dragon.ansestors
-			print dragon.decendants
-			print 'ans:'+str(dragon.ansestors).replace(',','')
-			print 'des:'+str(dragon.decendants).replace(',','')
-			print		
+	
 		
 	#assumes the dragon is a full dragon object, previously created, mother and father full object too, or None
-	# for that dragon just make the ancestors and descendants None, We'll replace it for you, also we will determine Gen, you put whatever you like
+	# for dragon just make the ancestors and descendants None, We'll replace it for you, also we will determine Gen, you put whatever you like
 	def add(self, dragon, mother, father):
 		
 		# fix up the dragon with some data that it needs to get from other dragons
@@ -206,10 +140,10 @@ class Data:
 			dragon.fatherDragon = father
 			dragon.ansestors[0]=[mother.id, father.id]
 			
-			# gen
+			# gen is the greater of the parental gens plus one
 			dragon.gen = max(mother.gen+1,father.gen+1)
 			
-			# take parents ancestors and make them our own (with proper tweaks)
+			# take parents' ancestors and make them our own (with proper tweaks)
 			for parent in dragon.ansestors[0]:
 				dragon.ansestors[1] = dragon.ansestors[1]+self.IDmap[parent].ansestors[0]
 				dragon.ansestors[2] = dragon.ansestors[2]+self.IDmap[parent].ansestors[1]
@@ -231,38 +165,19 @@ class Data:
 	
 		
 	#assumes the dragon is a full dragon object, previously created.
+	# makes it so that from a visual perspective the dragon does not exist, but it remains in all the data
 	def exault(self, dragon):
-		# the dragon holds all the info necessary to get rid of itself.
-		'''
-		# need a better algorithm 
-		
-		for level in range (5):
-			for ansestor in dragon.ansestors[level]:
-				print str(ansestor) + 'removed'
-				self.IDmap[ansestor].decendants[level].remove(dragon.id)
-		
-		for level in range (5):
-			for decendant in dragon.decendants[level]:
-				print str(decendant) + 'removed'
-				self.IDmap[decendant].ansestors[level].remove(dragon.id)
-				if level == 0:
-					if dragon.matingType:
-						self.IDmap[decendant].motherDragon = None
-					else:
-						self.IDmap[decendant].fatherDragon = None
-		'''
 		dragon.exalt = True
 		self.dragonList.remove(dragon)
-		#del self.IDmap[dragon.id]
-		#self.genMap[dragon.gen].remove(dragon)
+		# yes, that was horrifically simple.  It used to be more complicated.
 		
 	
-	#takes a filename, which must be in DRG format, and reads it in to creat a list
+	# takes a filename, string, of a file which must be in DRG format, and reads it in to creat a list
 	# The data is then put into a Dragon object, for slightly better OO design
 	# will need to re-do for to make use of the XML tree for even BETTER OO design
 	def readFromFile(self, filename):
 		self.DRG = ET.parse(filename)
-		mainFamily = self.DRG.find('Family')
+		mainFamily = self.DRG.find('Family') # right now settle for first family.  Will have to change.
 		allDragons = mainFamily.findall('Dragon')
 		
 		# list of dragons we will return
@@ -275,6 +190,7 @@ class Data:
 				print 'I am a terrible person and don\'t actually support dragons created in other programs yet.  Sorry.'
 				quit()
 			
+			# harvest common values and in some cases cast to proper type
 			id = int(aDragon.find('id').text)
 			name = aDragon.find('name').text
 			value = aDragon.find('exalted').text
@@ -296,7 +212,8 @@ class Data:
 			notes = aDragon.find('comment').text
 			
 			##############
-			# stuff that will hav to change
+			# stuff that will hav to change for compatibility
+			# harvest values from personal notes
 			myTag = aDragon.find('DAL9000')
 			gen = int(myTag.find('gen').text)
 			
@@ -337,19 +254,23 @@ class Data:
 		
 	# saves the current dragons in a fancy file, that can be reopened!	
 	# Now in DRG format! (Or as close as I can get to my own impossible standards)
+	# takes in filename, a string which is what you want to call the file
 	def saveInFile(self,filename):
 		
 		# if this is a new file, make the base enclosing tags and Element Tree
-		# will need to revisit once something happens with families
+		# will need to revisit once something happens with families (right now assuming one family per file)
 		if self.DRG == None:
-			root = ET.Element('drg')
-			family = ET.SubElement(root, 'Family')
+			root = ET.Element('drg') #create root element
+			family = ET.SubElement(root, 'Family') #create sub elements
 			title = ET.SubElement(family, 'title')
 			title.text = "A Family"
-			self.DRG = ET.ElementTree(element=root)
+			self.DRG = ET.ElementTree(element=root) # put it all in an ElementTree wrapper
 			
-		# going through all the dragons
-		for dragon in self.dragonList:
+		# go through all the dragons (even exalted) to make sure they are up to date
+		keys = self.IDmap.keys()
+		for key in keys:
+			dragon  = self.IDmap[key]
+			
 			# if the dragon does not have a node, make one, and fill it with sub nodes
 			if dragon.treeNode == None:
 				mainFamily = self.DRG.find('Family')
@@ -375,6 +296,7 @@ class Data:
 				ET.SubElement(new, 'tertiary')
 				ET.SubElement(new, 'comment')
 				
+				# stuff in just my tag
 				myTag = ET.SubElement(new, 'DAL9000')
 				ET.SubElement(myTag, 'gen')
 				ET.SubElement(myTag, 'anestors2')
@@ -385,11 +307,9 @@ class Data:
 				ET.SubElement(myTag, 'decendants3')
 				ET.SubElement(myTag, 'decendants4')
 				ET.SubElement(myTag, 'decendants5')
-				
-				
-				
-				
-			# make sure stuff in node is up to date
+			
+			
+			# make sure stuff in node is up to date, properly formatted.  Any changes will therefor be saved
 			dragon.treeNode.find('name').text = dragon.name
 			dragon.treeNode.find('exalted').text = str(dragon.exalt)
 			dragon.treeNode.find('species').text = dragon.species
@@ -401,7 +321,7 @@ class Data:
 			myTag = dragon.treeNode.find('DAL9000')
 			myTag.find('gen').text = str(dragon.gen)
 			
-			# need to re-convert to strings.  What a pain
+			# need to re-convert ints to strings.  What a pain
 			for i in range(5):
 				dragon.ansestors[i] = [ str(x) for x in dragon.ansestors[i] ]
 				dragon.decendants[i] = [ str(x) for x in dragon.decendants[i] ]
@@ -417,28 +337,50 @@ class Data:
 			myTag.find('decendants3').text = ' '.join(dragon.decendants[2])
 			myTag.find('decendants4').text = ' '.join(dragon.decendants[3])
 			myTag.find('decendants5').text = ' '.join(dragon.decendants[4])
-				
+		
+		# use the build in write line to write to the file, using the html format, because it has better empty tags		
 		self.DRG.write(filename, method = 'html')
 		
-		# to add the first line.  I like 'em
+		# to add the first line, which is nice to have.  
 		with file(filename, 'r') as original: data = original.read()
 		with file(filename, 'w') as modified: modified.write("<?xml version='1.0' encoding='UTF-8'?> \n" + data)		
 		
 		
+	# check it all worked without the display, buy printing a bunch of dragon information.  
+	# used exclusively for testing
+	# right now something is wrong with offspring, and it is different than what is shown in the display.  Panic.
+	# anyone who figures it out gets a prize
+	def check(self):
+		print "###"
+		for dragon in self.dragonList:
+			print dragon.id
+			print dragon.name
+			print dragon.gen
+			print dragon.ansestors[0]
+			print dragon.motherDragon
+			print dragon.fatherDragon
+			print dragon.ansestors
+			print dragon.decendants
+			print 'ans:'+str(dragon.ansestors).replace(',','')
+			print 'des:'+str(dragon.decendants).replace(',','')
+			print		
 
-
+	
+	
+	
 	
 
 # Tests stuff
+# right now tests exalting.  Edit as you please  
 def test():
-	dataThing = Data("00converted.csv")
+	dataThing = Data("demo.drg")
 	
 	dataThing.check()
 	print dataThing.dragonList
 	print dataThing.IDmap
 	print dataThing.genMap
 	
-	derg = dataThing.IDmap[5]
+	derg = dataThing.IDmap[3]
 	dataThing.exault(derg)
 	print
 	print "###########################################################"
@@ -448,11 +390,10 @@ def test():
 	print dataThing.dragonList
 	print dataThing.IDmap
 	print dataThing.genMap
-	#dataThing.saveInFile("00converted.csv")
-
-
-
 	
-if __name__ == "__main__":
 
+
+
+# this code is only run if this file is.  
+if __name__ == "__main__":
 	test()
