@@ -5,7 +5,7 @@
 
 
 import Tkinter as tk
-
+import datetime
 
 ##########################
 # Dialog box class
@@ -154,7 +154,7 @@ class AddDragonDialog(Dialog):
 		parents = [females,males]
 		
 		# i is five because parental options will end up starting in the fifth row
-		i =5
+		i =6
 		
 		# for both of the lists of parents
 		for list in parents:
@@ -175,7 +175,7 @@ class AddDragonDialog(Dialog):
 				parentMenu = apply(tk.OptionMenu, (master, parentOption) + tuple(list[1:]))
 			
 			# add the option to the places it needs to be (displayed in the grid and in the list of option thingies)
-			parentMenu.grid( row=i, column=1)
+			parentMenu.grid( row=i, column=1, columnspan=2,sticky="ew")
 			self.listboxList.append(parentOption)
 			i+=1
 			
@@ -205,10 +205,10 @@ class AddDragonDialog(Dialog):
 		
 		# place the darn things in their proper places in the grid
 		label = tk.Label( master, width=10, textvariable=motherName )
-		label.grid( row=i-2, column=2)
+		label.grid( row=i-2, column=3)
 		
 		label = tk.Label( master, width=10, textvariable=fatherName )
-		label.grid( row=i-1, column=2)
+		label.grid( row=i-1, column=3)
 			
 			
 			
@@ -218,45 +218,76 @@ class AddDragonDialog(Dialog):
 		label = tk.Label( master, text="Name:", width=10 )
 		label.grid( row=0, column=0)
 		name = tk.Entry(master, width = 10)
-		name.grid( row=0, column=1)
+		name.grid( row=0, column=1, columnspan=2)
 		self.listboxList.append(name)
 		
 		# ID with free entry
 		label = tk.Label( master, text="ID number:", width=10 )
 		label.grid( row=1, column=0)
 		id = tk.Entry(master, width = 10)
-		id.grid( row=1, column=1)
+		id.grid( row=1, column=1, columnspan=2)
 		self.listboxList.append(id)
+		
+		
+		# hatchday, the day the dragon was born
+		date = datetime.date.today()
+		
+		label = tk.Label( master, text="Hatch Day:", width=10 )
+		label.grid( row=2, column=0)
+		hatchMonthOption = tk.StringVar( master )
+		hatchMonthOption.set(date.month)
+		hatchMonthMenu = tk.OptionMenu( master, hatchMonthOption, 
+			"1","2","3","4",'5',"6",'7','8','9','10','11','12' ) # Note to self, can add a command to the menu.  Just a thought for the future. 
+		hatchMonthMenu.config(width=5)
+		hatchMonthMenu.grid( row=2, column=1)
+		
+		hatchDayOption = tk.StringVar( master )
+		hatchDayOption.set(date.day)
+		hatchDayMenu = tk.OptionMenu( master, hatchDayOption, 
+			"1","2","3","4",'5',"6",'7','8','9','10',"11","12","13","14",'15',"16",'17','18','19','20',"21","22","23","24",'25',"26",'27','28','29','30','31' ) # Note to self, can add a command to the menu.  Just a thought for the future. 
+		hatchDayMenu.config(width=5)
+		hatchDayMenu.grid( row=2, column=2)
+		
+		allYears = range(2010,int(date.year)+1)
+		hatchYearOption = tk.StringVar( master )
+		hatchYearOption.set(date.year)
+		hatchYearMenu = apply(tk.OptionMenu, (master, hatchYearOption) + tuple(allYears))
+		hatchYearMenu.grid( row=2, column=3)
+		
+		# Postpone adding to listbox list for minimal disruption
+		#self.listboxList.append(matingTypeOption)
+				
+		
 		
 		# matingType, with a drop-down menue with two options, Male and Female
 		label = tk.Label( master, text="Mating Type:", width=10 )
-		label.grid( row=2, column=0)
+		label.grid( row=3, column=0)
 		matingTypeOption = tk.StringVar( master )
 		matingTypeOption.set("Female")
 		matingTypeMenu = tk.OptionMenu( master, matingTypeOption, 
 			"Female","Male" ) # Note to self, can add a command to the menu.  Just a thought for the future. 
-		matingTypeMenu.grid( row=2, column=1)
+		matingTypeMenu.grid( row=3, column=1, columnspan=2,sticky="ew")
 		self.listboxList.append(matingTypeOption)
 		
 		# breed, with dropdown menue listing all the current breeds, in order like at predict Morphology
 		label = tk.Label( master, text="Breed:", width=10 )
-		label.grid( row=3, column=0)
+		label.grid( row=4, column=0)
 		breedOption = tk.StringVar( master )
 		breedOption.set("Fae")
 		breedMenu = tk.OptionMenu( master, breedOption, 
 			"Fae","Guardian","Mirror","Pearlcatcher","Ridgeback","Tundra","Spiral","Imperial","Snapper","Wildclaw","Nocturne","Coatl","Skydancer" )
-		breedMenu.grid( row=3, column=1)
+		breedMenu.grid( row=4, column=1, columnspan=2,sticky="ew")
 		self.listboxList.append(breedOption)
 		
 		# add a line separating the above from the the next set of info
 		sep = tk.Frame( master, height=2, width = 300, bd=1, relief=tk.SUNKEN )
-		sep.grid(row=4,columnspan=3)	
+		sep.grid(row=5,columnspan=4)	
 		
 		# parent selection happens here
 		
 		# add a divider between the parent information and the gene information
 		sep = tk.Frame( master, height=2, width = 300, bd=1, relief=tk.SUNKEN )
-		sep.grid(row=i,columnspan=3)
+		sep.grid(row=i,columnspan=4)
 		i+=1
 		
 		# make primary, secondary, and tertiary sections for and genes.  Not colors because they are always the same.
@@ -275,31 +306,36 @@ class AddDragonDialog(Dialog):
 			colorOption.set("Maize")
 			colorMenu = tk.OptionMenu( master, colorOption, 
 				"Maize","White","Ice","Platinum","Silver","Gray","Charcoal","Coal","Black","Obsidian","Midnight","Shadow","Mulberry","Thistle","Lavender","Purple","Violet","Royal","Storm","Navy","Blue","Splash","Sky","Stonewash","Steel","Denim","Azure","Caribbean","Teal","Aqua","Seafoam","Jade","Emerald","Jungle","Forest","Swamp","Avocado","Green","Leaf","Spring","Goldenrod","Lemon","Banana","Ivory","Gold","Sunshine","Orange","Fire","Tangerine","Sand","Beige","Stone","Slate","Soil","Brown","Chocolate","Rust","Tomato","Crimson","Blood","Maroon","Red","Carmine","Coral","Magenta","Pink","Rose" ) # can add a command to the menu
-			colorMenu.grid( row=i, column=1)
+			colorMenu.grid( row=i, column=1, columnspan=2,sticky="ew")
 			self.listboxList.append(colorOption)
 			
 			# do the same thing with the genes, but with the already created lists!
 			geneOption = tk.StringVar( master )
 			geneOption.set("Basic")
-			geneMenu = apply(tk.OptionMenu, (master, geneOption) + tuple(geneListList[i%3-2]))
-			geneMenu.grid( row=i, column=2)
+			geneMenu = apply(tk.OptionMenu, (master, geneOption) + tuple(geneListList[i%3]))
+			geneMenu.grid( row=i, column=3,sticky="ew")
 			self.listboxList.append(geneOption)
 			i+=1
 		
 		# add another divider
 		sep = tk.Frame( master, height=2, width = 300, bd=1, relief=tk.SUNKEN)
-		sep.grid(row=i,columnspan=3)
+		sep.grid(row=i,columnspan=4)
 		i+=1
 		
 		# add another divider, but we are going to put the textbox inside this one, so it looks pretty
 		sep = tk.Frame( master, height=200, width = 300, bd=1, relief=tk.SUNKEN )
-		sep.grid(row=i,columnspan=3)
+		sep.grid(row=i,columnspan=4)
 		i+=1
 		
 		# the afore mentioned textbox
 		self.text = tk.Text(sep, height=10, width =40,wrap=tk.WORD,takefocus=True,relief = tk.SUNKEN)
-		self.text.grid(row=i, column=0, columnspan=3)
+		self.text.grid(row=i, column=0, columnspan=4)
 		
+		
+		#add the date and times now
+		self.listboxList.append(hatchDayOption)
+		self.listboxList.append(hatchMonthOption)
+		self.listboxList.append(hatchYearOption)
 		
 	# send the results to a place where they can be retrieved.
 	def apply(self):
@@ -354,39 +390,70 @@ class EditDragonDialog(Dialog):
 		label.grid( row=0, column=0)
 		name = tk.Entry(master, width = 10)
 		name.insert(0, self.curDrag.name)
-		name.grid( row=0, column=1)
+		name.grid( row=0, column=1, columnspan=2,sticky="ew")
 		self.listboxList.append(name)
 		
 		# ID, which we show because we are polite.  You cannot change it.
 		label = tk.Label( master, text="ID number:", width=10 )
 		label.grid( row=1, column=0)
 		label = tk.Label( master, text=self.curDrag.id, width=10 )
-		label.grid( row=1, column=1)
+		label.grid( row=1, column=1, columnspan=2,sticky="ew")
+		
+		
+		# hatchday, the day the dragon was born
+		date = self.curDrag.hatchDay.split('-')
+		today = datetime.date.today()
+		
+		label = tk.Label( master, text="Hatch Day:", width=10 )
+		label.grid( row=2, column=0)
+		hatchMonthOption = tk.StringVar( master )
+		hatchMonthOption.set(date[1])
+		hatchMonthMenu = tk.OptionMenu( master, hatchMonthOption, 
+			"1","2","3","4",'5',"6",'7','8','9','10','11','12' ) # Note to self, can add a command to the menu.  Just a thought for the future. 
+		hatchMonthMenu.config(width=5)
+		hatchMonthMenu.grid( row=2, column=1)
+		
+		hatchDayOption = tk.StringVar( master )
+		hatchDayOption.set(date[0])
+		hatchDayMenu = tk.OptionMenu( master, hatchDayOption, 
+			"1","2","3","4",'5',"6",'7','8','9','10',"11","12","13","14",'15',"16",'17','18','19','20',"21","22","23","24",'25',"26",'27','28','29','30','31' ) # Note to self, can add a command to the menu.  Just a thought for the future. 
+		hatchDayMenu.config(width=5)
+		hatchDayMenu.grid( row=2, column=2)
+		
+		allYears = range(2010,int(today.year)+1)
+		hatchYearOption = tk.StringVar( master )
+		hatchYearOption.set(date[2])
+		hatchYearMenu = apply(tk.OptionMenu, (master, hatchYearOption) + tuple(allYears))
+		hatchYearMenu.grid( row=2, column=3)
+		
+		# Postpone adding to listbox list for minimal disruption
+		#self.listboxList.append(matingTypeOption)
+		
 		
 		# Mating Type, which we show because we are polite.  You cannot change it.
 		label = tk.Label( master, text="Mating Type:", width=10 )
-		label.grid( row=2, column=0)
+		label.grid( row=3, column=0)
 		if self.curDrag.matingType:
 			matingType = "Female"
 		else:
 			matingType = "Male"
 		label = tk.Label( master, text=matingType, width=10 )
-		label.grid( row=2, column=1)
+		label.grid( row=3, column=1, columnspan=2,sticky="ew")
 		
 		# breed, with dropdown menue listing all the current breeds, in order like at predict Morphology
 		label = tk.Label( master, text="Breed:", width=10 )
-		label.grid( row=3, column=0)
+		label.grid( row=4, column=0)
 		breedOption = tk.StringVar( master )
 		breedOption.set(self.curDrag.species)
 		breedMenu = tk.OptionMenu( master, breedOption, 
 			"Fae","Guardian","Mirror","Pearlcatcher","Ridgeback","Tundra","Spiral","Imperial","Snapper","Wildclaw","Nocturne","Coatl","Skydancer" ) # can add a command to the menu
-		breedMenu.grid( row=3, column=1)
+		breedMenu.grid( row=4, column=1, columnspan=2,sticky="ew")
 		self.listboxList.append(breedOption)
 		
 		i=5 # Because I coppied code, we still do the i thing, still starting at 5
 		# divider between the above and the gene color stuff
 		sep = tk.Frame( master, height=2, width = 300, bd=1, relief=tk.SUNKEN )
-		sep.grid(row=i,columnspan=3)
+		sep.grid(row=i,columnspan=4)
 		i+=1
 		
 		# make primary, secondary, and tertiary sections for and genes.  Not colors because they are always the same.
@@ -402,33 +469,38 @@ class EditDragonDialog(Dialog):
 			label.grid( row=i, column=0)
 			# create the color option menue, display it, and save it in the list of listboxes
 			colorOption = tk.StringVar( master )
-			colorOption.set("Maize")
+			colorOption.set(self.curDrag.colors[i%3])
 			colorMenu = tk.OptionMenu( master, colorOption, 
 				"Maize","White","Ice","Platinum","Silver","Gray","Charcoal","Coal","Black","Obsidian","Midnight","Shadow","Mulberry","Thistle","Lavender","Purple","Violet","Royal","Storm","Navy","Blue","Splash","Sky","Stonewash","Steel","Denim","Azure","Caribbean","Teal","Aqua","Seafoam","Jade","Emerald","Jungle","Forest","Swamp","Avocado","Green","Leaf","Spring","Goldenrod","Lemon","Banana","Ivory","Gold","Sunshine","Orange","Fire","Tangerine","Sand","Beige","Stone","Slate","Soil","Brown","Chocolate","Rust","Tomato","Crimson","Blood","Maroon","Red","Carmine","Coral","Magenta","Pink","Rose" ) # can add a command to the menu
-			colorMenu.grid( row=i, column=1)
+			colorMenu.grid( row=i, column=1, columnspan=2,sticky="ew")
 			self.listboxList.append(colorOption)
 			
 			# do the same thing with the genes, but with the already created lists!
 			geneOption = tk.StringVar( master )
-			geneOption.set("Basic")
-			geneMenu = apply(tk.OptionMenu, (master, geneOption) + tuple(geneListList[i%3-2]))
-			geneMenu.grid( row=i, column=2)
+			geneOption.set(self.curDrag.genes[i%3])
+			geneMenu = apply(tk.OptionMenu, (master, geneOption) + tuple(geneListList[i%3]))
+			geneMenu.grid( row=i, column=3,sticky="ew")
 			self.listboxList.append(geneOption)
 			i+=1
 		
 		# add another divider
 		sep = tk.Frame( master, height=2, width = 300, bd=1, relief=tk.SUNKEN)
-		sep.grid(row=i,columnspan=3)
+		sep.grid(row=i,columnspan=4)
 		i+=1
 		
 		# add another divider, but we are going to put the textbox inside this one, so it looks pretty
 		sep = tk.Frame( master, height=200, width = 300, bd=1, relief=tk.SUNKEN )
-		sep.grid(row=i,columnspan=3)
+		sep.grid(row=i,columnspan=4)
 		i+=1
 		
 		# the afore mentioned textbox
 		self.text = tk.Text(sep, height=10, width =40,wrap=tk.WORD,takefocus=True,relief = tk.SUNKEN)
-		self.text.grid(row=i, column=0, columnspan=3)
+		self.text.grid(row=i, column=0, columnspan=4)
+		
+		#add the date and times now
+		self.listboxList.append(hatchDayOption)
+		self.listboxList.append(hatchMonthOption)
+		self.listboxList.append(hatchYearOption)
 		
 	# send the results to a place where they can be retrieved.
 	def apply(self):

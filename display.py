@@ -14,6 +14,10 @@ import dragonData2 as dd
 import dialogs
 
 """
+for next update:
+	hatchday data, entry and storage and storage if not entered
+
+
 dragon tree, because it's my pet project
 	release notes
 		0.0 = python command line version, with features as i add them
@@ -113,8 +117,8 @@ class DisplayApp:
 		# a dictionary, key is string capitalized name, result is integer used to index into the rarity table
 		# 0 = plentiful, 1 = common, 2 = uncommon, 3 = limited, 4 = rare
 		self.rarityIndex = {"Fae":0,"Guardian":0,"Mirror":0,"Pearlcatcher":1,"Ridgeback":1,"Tundra":0,"Spiral":1,"Imperial":3,"Snapper":1,"Wildclaw":4,"Nocturne":3,"Coatl":4,"Skydancer":2, \
-							"Basic":0,"Iridescent":4,"Tiger":1,"Clown":1,"Speckle":1,"Ripple":2,"Bar":2,"Crystal":4,"Vipera":2,"Piebald":1,"Cherub":2, \
-							"Shimmer":4,"Stripes":1,"Eye Spots":1,"Freckle":1,"Seraph":2,"Current":1,"Daub":1,"Facet":4,"Hypnotic":1,"Paint":1,"Peregrine":1, \
+							"Basic":0,"Iridescent":4,"Tiger":1,"Clown":1,"Speckle":1,"Ripple":2,"Bar":2,"Crystal":4,"Vipera":2,"Piebald":1,"Cherub":2, "Poison":3,\
+							"Shimmer":4,"Stripes":1,"Eye Spots":1,"Freckle":1,"Seraph":2,"Current":1,"Daub":1,"Facet":4,"Hypnotic":1,"Paint":1,"Peregrine":1, "Toxin":3, \
 							"Circuit":4,"Gembond":3,"Underbelly":1,"Crackle":2,"Smoke":2,"Spines":3,"Okapi":2,"Glimmer":4}
 		# use the relative rarity of two genes or breeds to find the odds of each one in a cross
 		self.rarityTable = [["50/50","70/30","85/15","97/3","99/1"], 
@@ -283,7 +287,7 @@ class DisplayApp:
 			self.posibleColor[2].append(self.panelCanvas.create_rectangle( 10+5*i,70 , 13+5*i,90, fill="blue",outline='blue',state=tk.HIDDEN))
 		
 		# add a place for text to appear below the rectangles.  These are the notes.
-		self.dragonText = tk.Text(rightcntlframe, height=10, width =20,wrap=tk.WORD,takefocus=True,relief = tk.SUNKEN)
+		self.dragonText = tk.Text(rightcntlframe, height=10, width =30,wrap=tk.WORD,takefocus=True,relief = tk.SUNKEN)
 		self.dragonText.pack(side=tk.TOP, pady=5)
 		
 		
@@ -421,8 +425,10 @@ class DisplayApp:
 			mother = self.dragons.IDmap[int(par[0])]
 			father = self.dragons.IDmap[int(par[1])]
 		
+		date = par[12]+'-'+par[13]+'-'+par[14]
+		print date
 		# create the new dragon object, and then add it to the tree
-		new = dd.Dragon( int(par[3]), par[2], 1, None, None, False, matingType, par[5], [par[6],par[8],par[10]], [par[7],par[9],par[11]], par[12])
+		new = dd.Dragon( int(par[3]), par[2], 1, None, None, False, matingType, par[5], [par[6],par[8],par[10]], [par[7],par[9],par[11]], par[-1],hatchDay=date)
 		self.dragons.add(new, mother, father)
 		
 		# place the dragon in the appropriate grid space
@@ -453,7 +459,8 @@ class DisplayApp:
 		self.pointSelect.genes[1] = box.result[5]
 		self.pointSelect.colors[2] = box.result[6]
 		self.pointSelect.genes[2] = box.result[7]
-		self.pointSelect.notes = box.result[8]
+		self.pointSelect.hatchDay = par[8]+'-'+par[9]+'-'+par[10]
+		self.pointSelect.notes = box.result[-1]
 		
 		# update the display data one the side to reflect the new dragon appearance
 		self.updateDragonSide()
@@ -548,6 +555,7 @@ class DisplayApp:
 		# set the text to something that shows ALL the data
 		self.pointSelText.set("Dragon Info\r\rName: %s" %(self.pointSelect.name)+
 										  "\rID: %d" %(self.pointSelect.id)+
+										  "\rHatch Day: %s" %(self.pointSelect.hatchDay)+
 										  "\rMating Type: %s" %(matingType)+
 										  "\rGeneration: %d" %(self.pointSelect.gen)+
 										  "\r\rMother: %s"%(motherName)+
@@ -659,6 +667,30 @@ class DisplayApp:
 			# be sure to include the last one
 			self.panelCanvas.itemconfig(self.posibleColor[i][j], outline = "black",fill=self.colorData[self.colorList[start-j-1]][1],state = tk.NORMAL)
 		
+		# find the probabilities of the two species
+		if self.pointSelect.species == self.hoverDrag.species:
+			# are they the same?  100% chance of it
+			breedGeneString = "100% "+ self.hoverDrag.species + "\n"
+		else:
+			# if they are different, use the rarityIndex of each species to index into the rarity table to get the appropriate rarities.  
+			raritys = self.rarityTable[self.rarityIndex[self.hoverDrag.species]][self.rarityIndex[self.pointSelect.species]].split("/")
+			# and stringify them nicely
+			breedGeneString = raritys[0] + "% " + self.hoverDrag.species + " | " +raritys[1] + "% " + self.pointSelect.species + "\n"
+		
+		# same thing over here, but wit three rounds of stringing!  Append to previous string.  
+		for i in range(3):
+			if self.pointSelect.genes[i] == self.hoverDrag.genes[i]:
+				breedGeneString += "100% "+ self.hoverDrag.genes[i] + "\n"
+			else:
+				raritys = self.rarityTable[self.rarityIndex[self.hoverDrag.genes[i]]][self.rarityIndex[self.pointSelect.genes[i]]].split("/")
+				breedGeneString += raritys[0] + "% " + self.hoverDrag.genes[i] + " | " +raritys[1] + "% " + self.pointSelect.genes[i] + "\n"
+		
+		
+		# displaying the breed and gene rarities
+		self.dragonText.config(state=tk.NORMAL) # set the text thing to be editable
+		self.dragonText.delete(1.0, tk.END) # delete the old text
+		self.dragonText.insert(tk.END,breedGeneString) # set the text to the thing
+		self.dragonText.config(state=tk.DISABLED) # set the text to uneditable
 		
 	# blanks the side panel, for when no dragon is selected
 	def resetDragonSide(self):

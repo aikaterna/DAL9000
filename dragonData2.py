@@ -25,7 +25,7 @@ import xml.etree.ElementTree as ET
 # this class will eventually have to be entirely re-written, to make proper use of the new ElementTree
 # why did I not write Accessor and Mutator functions when I had the chance? WHY?  There is a lesson here kids, do more code earlier to save time later.
 class Dragon:
-	def __init__(self, id, name, gen, ansestors, decendants, exalt, matingType, species, colors, genes, notes, treeNode=None):
+	def __init__(self, id, name, gen, ansestors, decendants, exalt, matingType, species, colors, genes, notes, treeNode=None, hatchDay=None):
 		self.id = id # integer, id number
 		self.name = name # string, name of the dragon
 		self.gen = gen # integer, generation within the clan (starting at 1).  Not generation within Flight Rising.
@@ -37,6 +37,7 @@ class Dragon:
 		
 		self.exalt = exalt # boolean, true if exalted, false if still around
 		self.matingType = matingType # boolean, true if female, false if male
+		self.hatchDay = hatchDay # string in DD-MM-YYYY format
 		
 		self.species = species # string, species
 		self.colors = colors # list of strings, color names in order primary secondary tertiary 
@@ -211,6 +212,15 @@ class Data:
 			colors = [primary[0], secondary[0], tertiary[0]]
 			notes = aDragon.find('comment').text
 			
+			# hatchday was a late add, so backwards computability
+			
+			day = aDragon.find('hatchDay')
+			if day == None:
+				ET.SubElement(aDragon, 'hatchDay')
+				aDragon.find('hatchDay').text = '30-11-2010'
+				day = aDragon.find('hatchDay')
+			hatchDay = day.text
+			
 			##############
 			# stuff that will hav to change for compatibility
 			# harvest values from personal notes
@@ -246,7 +256,7 @@ class Data:
 					ansestors[i] = []
 			
 			# make a dragon and add it to the table	
-			table.append(Dragon(id,name,gen,ansestors,decendants,exalt,matingType,species,colors,genes,notes,aDragon))
+			table.append(Dragon(id,name,gen,ansestors,decendants,exalt,matingType,species,colors,genes,notes,aDragon,hatchDay))
 		
 		# don't forget to return the table!
 		return table
@@ -286,6 +296,8 @@ class Data:
 				ET.SubElement(new, 'parents')
 				ET.SubElement(new, 'children')
 				
+				ET.SubElement(new, 'hatchDay')
+				dragon.treeNode.find('hatchDay').text = str(dragon.hatchDay) # add the unchangeable
 				ET.SubElement(new, 'exalted')
 				ET.SubElement(new, 'matingType')
 				dragon.treeNode.find('matingType').text = str(dragon.matingType) # add the unchangeable
@@ -342,8 +354,8 @@ class Data:
 		self.DRG.write(filename, method = 'html')
 		
 		# to add the first line, which is nice to have.  
-		with file(filename, 'r') as original: data = original.read()
-		with file(filename, 'w') as modified: modified.write("<?xml version='1.0' encoding='UTF-8'?> \n" + data)		
+		#with file(filename, 'r') as original: data = original.read()
+		#with file(filename, 'w') as modified: modified.write("<?xml version='1.0' encoding='UTF-8'?> \n" + data)		
 		
 		
 	# check it all worked without the display, buy printing a bunch of dragon information.  
