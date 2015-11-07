@@ -495,6 +495,7 @@ class EditDragonDialog(Dialog):
 		
 		# the afore mentioned textbox
 		self.text = tk.Text(sep, height=10, width =40,wrap=tk.WORD,takefocus=True,relief = tk.SUNKEN)
+		self.text.insert(tk.END,self.curDrag.notes)
 		self.text.grid(row=i, column=0, columnspan=4)
 		
 		#add the date and times now
