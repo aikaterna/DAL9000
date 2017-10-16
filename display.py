@@ -8,8 +8,8 @@
 
 # special thanks to Flight Rising user Resonance, 381, for the color hex values
 
-import Tkinter as tk
-import tkFileDialog
+import tkinter as tk
+from tkinter import filedialog
 import dragonData2 as dd
 import dialogs
 
@@ -105,7 +105,7 @@ class DisplayApp:
 		self.dragons = dd.Data() # dragon data object holding all the dragons
 		self.imageKey = {} #key, the dragon image objects (numbers), result, the dragon objects (objects)
 		self.colorData = {} # all colors, with string names as keys, returning [int number in spectrum, string hex value]
-		self.colorList = ["Maize","White","Ice","Platinum","Silver","Gray","Charcoal","Coal","Black","Obsidian","Midnight","Shadow","Mulberry","Thistle","Lavender","Purple","Violet","Royal","Storm","Navy","Blue","Splash","Sky","Stonewash","Steel","Denim","Azure","Caribbean","Teal","Aqua","Seafoam","Jade","Emerald","Jungle","Forest","Swamp","Avocado","Green","Leaf","Spring","Goldenrod","Lemon","Banana","Ivory","Gold","Sunshine","Orange","Fire","Tangerine","Sand","Beige","Stone","Slate","Soil","Brown","Chocolate","Rust","Tomato","Crimson","Blood","Maroon","Red","Carmine","Coral","Magenta","Pink","Rose"] # this is a list of color names as strings you dummy
+		self.colorList = ["Maize","Cream","Antique","White","Moon","Ice","Orca","Platnum","Silver","Dust","Grey","Smoke","Gloom","Lead","Shale","Flint","Charcoal","Coal","Oilslick","Black","Obsidian","Eldritch","Midnight","Shadow","Blackberry","Mulberry","Plum","Wisteria","Thistle","Fog","Mist","Lavender","Heather","Purple","Orchid","Amethyst","Nightshade","Violet","Grape","Royal","Eggplant","Iris","Storm","Twilight","Indigo","Sapphire","Navy","Cobalt","Ultramarine","Blue","Periwinkle","Lapis","Splash","Cornflower","Sky","Stonewash","Overcast","Steel","Denim","Abyss","Phthalo","Azure","Caribbean","Teal","Cerulean","Cyan","Robin","Aqua","Turquoise","Spruce","Pistachio","Seafoam","Mint","Jade","Spearmint","Thicket","Peacock","Emerald","Shamrock","Jungle","Hunter","Forest","Camo","Algae","Swamp","Avocado","Green","Fern","Mantis","Pear","Leaf","Radioactive","Honeydew","Peridot","Chartreuse","Spring","Crocodile","Olive","Murk","Moss","Goldenrod","Amber","Honey","Lemon","Yellow","Grapefruit","Banana","Sanddollar","Flaxen","Ivory","Buttercup","Gold","Metals","Honeydew","Marigold","Sunshine","Saffron","Sunset","Peach","Cantaloupe","Orange","Bronze","Terracotta","Carrot","Fire","Pumpkin","Tangerine","Cinnamon","Caramel","Sand","Tan","Beige","Stone","Taupe","Slate","Driftwood","Latte","Dirt","Clay","Sable","Umber","Soil","Hickory","Tarnish","Ginger","Brown","Chocolate","Auburn","Copper","Tomato","Vermillion","Ruby","Cherry","Crimson","Garnet","Sanguine","Blood","Maroon","Berry","Red","Strawberry","Cerise","Carmine","Brick","Coral","Blush","Cottoncandy","Watermelon","Magenta","Fushia","Raspberry","Wine","Mauve","Pink","Bubblegum","Rose","Pearl"] # this is a list of color names as strings you dummy
 		self.totalX = 0 # how much the thing is off zero from the x perspective.  So new dragons are added in a reasonable location
 		self.totalY = 0 # how much the thing is off zero from the y perspective.  So new dragons are added in a reasonable location
 		
@@ -116,10 +116,11 @@ class DisplayApp:
 		# all genes and breeds with their relative rarity
 		# a dictionary, key is string capitalized name, result is integer used to index into the rarity table
 		# 0 = plentiful, 1 = common, 2 = uncommon, 3 = limited, 4 = rare
-		self.rarityIndex = {"Fae":0,"Guardian":0,"Mirror":0,"Pearlcatcher":1,"Ridgeback":1,"Tundra":0,"Spiral":1,"Imperial":3,"Snapper":1,"Wildclaw":4,"Nocturne":3,"Coatl":4,"Skydancer":2, \
-							"Basic":0,"Iridescent":4,"Tiger":1,"Clown":1,"Speckle":1,"Ripple":2,"Bar":2,"Crystal":4,"Vipera":2,"Piebald":1,"Cherub":2, "Poison":3,\
-							"Shimmer":4,"Stripes":1,"Eye Spots":1,"Freckle":1,"Seraph":2,"Current":1,"Daub":1,"Facet":4,"Hypnotic":1,"Paint":1,"Peregrine":1, "Toxin":3, \
-							"Circuit":4,"Gembond":3,"Underbelly":1,"Crackle":2,"Smoke":2,"Spines":3,"Okapi":2,"Glimmer":4}
+		self.rarityIndex = {"Fae":0,"Guardian":0,"Mirror":0,"Pearlcatcher":1,"Ridgeback":1,"Tundra":0,"Spiral":1,"Imperial":3,"Snapper":1,"Wildclaw":4,"Nocturne":3,"Coatl":4,"Skydancer":2,"Bogsneak":2, \
+							"Basic":0,"Iridescent":4,"Tiger":1,"Clown":1,"Speckle":1,"Ripple":2,"Bar":2,"Crystal":4,"Vipera":2,"Piebald":1,"Cherub":2,"Poison":3,"Falcon":1,"Giraffe":2,"Jaguar":2,"Jupiter":2,"Metallic":4,"Petals":4,"Savannah":1,"Skink":3, \
+							"Shimmer":4,"Stripes":1,"Eye Spots":1,"Freckle":1,"Seraph":2,"Current":1,"Daub":1,"Facet":4,"Hypnotic":1,"Paint":1,"Peregrine":1,"Toxin":3,"Alloy":4,"Bee":4,"Butterfly":4,"Hex":2,"Rosette":2,"Safari":1,"Saturn":2,"Spinner":3, \
+							"Circuit":4,"Gembond":3,"Underbelly":1,"Crackle":2,"Smoke":2,"Spines":3,"Okapi":2,"Glimmer":4,"Capsule":3,"Contour":1,"Lace":2,"Opal":4,"Runes":3,"Scales":3,"Thylacine":1,"Stained":4}
+
 		# use the relative rarity of two genes or breeds to find the odds of each one in a cross
 		self.rarityTable = [["50/50","70/30","85/15","97/3","99/1"], 
 							["30/70","50/50","75/25","90/10","99/1"],
@@ -152,7 +153,7 @@ class DisplayApp:
 		self.root.update_idletasks()
 
 		# now we can ask the size of the canvas
-		print self.canvas.winfo_geometry()
+		print(self.canvas.winfo_geometry())
 		
 		# set up the key bindings
 		self.setBindings()
@@ -162,7 +163,7 @@ class DisplayApp:
 		self.baseView = None
 		
 		# load color data from the color file
-		fobj = file("colorInfo.txt")
+		fobj = open("colorInfo.txt", "r")
 		lines = fobj.readlines()
 		fobj.close()
 		
@@ -175,7 +176,7 @@ class DisplayApp:
 			words = line.strip().split(",")
 			words[0] = int(words[0])
 			self.colorData[words[1]] = [words[0],words[2]]
-		print self.colorData
+		print(self.colorData)
 		
 		
 ##############################
@@ -318,7 +319,7 @@ class DisplayApp:
 	# This functon should be called whenever the view is changed and there is data, as it changes the data to reflect the view.
 	def updataData(self):
 		# actually I have no idea why this function still exists.  Keeping it for the print statement.  
-		print 'data has been outlawed by the freedom of non-infomration act'
+		print('data has been outlawed by the freedom of non-infomration act')
 			
 	
 	#This function handles opening a new file
@@ -336,7 +337,7 @@ class DisplayApp:
 		self.handleMouseButton1()
 		
 		# the file opening thingy
-		fn = tkFileDialog.askopenfilename( parent=self.root, title='Choose a data file', 
+		fn = filedialog.askopenfilename( parent=self.root, title='Choose a data file', 
 					 initialdir='.' )
 		if fn == '':
 			return
@@ -346,8 +347,9 @@ class DisplayApp:
 		self.dragons = dd.Data(name)
 		
 		# get a list of levels
-		levels = self.dragons.genMap.keys()
-		levels.sort()
+		# levels = self.dragons.genMap.keys()
+		# levels.sort()
+		levels = sorted(self.dragons.genMap)
 		
 		# draw each dragon component in a grid determined by it's level and position within the level
 		# dragon component is the image, the rectangle, and lines pointing to mother and father
@@ -365,13 +367,13 @@ class DisplayApp:
 	# function that saves the current dragon tree state
 	def handleSave(self, event = None):
 		# file opening thingy
-		fn = tkFileDialog.asksaveasfilename( defaultextension = ".drg",parent=self.root, title='Choose a data file', 
+		fn = filedialog.asksaveasfilename( defaultextension = ".drg",parent=self.root, title='Choose a data file', 
 					 initialdir='.' )
 		if fn == '':
 			return
 		# save those dragons!
 		self.dragons.saveInFile(fn)
-		print "Saved!"
+		print("Saved!")
 		
 		
 ##########################
@@ -380,12 +382,12 @@ class DisplayApp:
 	
 	# Quit
 	def handleQuit(self, event=None):
-		print 'Terminating'
+		print('Terminating')
 		self.root.destroy()
 
 	# resets the view to the origional view.
 	def reset(self, event = None):
-		print 'no reset for you'
+		print('no reset for you')
 		
 	
 ############################
@@ -397,7 +399,7 @@ class DisplayApp:
 		w = tk.Message(self.canvas, text="Now look what you've done",width=100)
 		w.config(background="red")
 		w.pack(side=tk.TOP)
-		print 'Your inability to follow simple instructions has been noted.'
+		print('Your inability to follow simple instructions has been noted.')
 		
 	
 	# This function adds a new dragon to the family
@@ -408,7 +410,7 @@ class DisplayApp:
 		
 		# make sure that the free entry fields have been filled to prevent errors
 		if (box.result[2]=="" or box.result[3]==""):
-			print "ERROR: Please include a name and ID number"
+			print("ERROR: Please include a name and ID number")
 			return
 		
 		# assigne matingType, from string to boolean (no not the familiar, the data type)
@@ -426,7 +428,7 @@ class DisplayApp:
 			father = self.dragons.IDmap[int(par[1])]
 		
 		date = par[12]+'-'+par[13]+'-'+par[14]
-		print date
+		print(date)
 		# create the new dragon object, and then add it to the tree
 		new = dd.Dragon( int(par[3]), par[2], 1, None, None, False, matingType, par[5], [par[6],par[8],par[10]], [par[7],par[9],par[11]], par[-1],hatchDay=date)
 		self.dragons.add(new, mother, father)
@@ -447,7 +449,7 @@ class DisplayApp:
 		
 		# make sure the name is not left blank.  
 		if box.result[0]=="":
-			print "ERROR: Please include a name"
+			print("ERROR: Please include a name")
 			return
 			
 		# change the dragon's fields appropriately.  Thank goodness they are already strings
@@ -799,8 +801,8 @@ class DisplayApp:
 		# reset the offset, and print it for fun
 		self.totalX+=dx
 		self.totalY+=dy
-		print self.totalX
-		print self.totalY
+		print(self.totalX)
+		print(self.totalY)
 		
 		# for each dragon, move it's...
 		for drag in self.dragons.dragonList:
@@ -839,21 +841,21 @@ class DisplayApp:
 	
 	# records base click and base view for zooming
 	def handleMouseButton3(self, event):
-		print 'no zoom for you'
+		print('no zoom for you')
 			
 	# zooming
 	# moving the mouse up the screen makes things bigger, moving it down the screen makes them smaller.
 	def handleMouseButton3Motion(self, event):
-		print 'no zoom for you'
+		print('no zoom for you')
 
 	# records base click and base view for rotation
 	def handleMouseButton2(self, event):
-		print 'no rotation for you'
+		print('no rotation for you')
 	
 	# handles the acutall rotation of the view.
 	# moving the mouse horizontally rotates around the VUP view axis, moving it vertically rotates around the U view axis
 	def handleMouseButton2Motion(self, event):
-		print 'no rotation for you'
+		print('no rotation for you')
 	
 
 #########################
@@ -862,7 +864,7 @@ class DisplayApp:
 		
 	# Main program
 	def main(self):
-		print 'Entering main loop'
+		print('Entering main loop')
 		self.root.mainloop()
 
 
